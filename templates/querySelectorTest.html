@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+    </head>
+    <body>
+        <h2>New Heading</h2>
+        <h2 id="title">Header 2 Element</h2>
+        <div id="container1">
+            <div class="box">Container1 - Box1</div>
+        </div>
+        <div id="container2">
+            <div class="box">Container2 - Box1</div>
+        </div>
+
+
+    </body>
+    <script type="module">
+        const container2 = document.querySelector("#container2");
+        const result = container2.querySelector(".box");
+        console.log(result);
+    </script>
+</html>

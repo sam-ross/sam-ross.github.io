@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        
+    </head>
+    <body>
+        <script>
+            class AirHacks extends HTMLElement{
+
+                connectedCallback(){
+                    this.innerText = "no slides";
+                }
+
+            }
+            customElements.define("air-hacks", AirHacks);
+        </script>
+
+        <air-hacks/>
+    </body>
+</html>

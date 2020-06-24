@@ -1,0 +1,79 @@
+{
+  "_from": "threejs-model-loader",
+  "_id": "threejs-model-loader@0.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-MCk74vVpmdHI7wjWE5mnHJEFr+/0e9iy2uMAZ4Vhr768F7mlECZwAbjllNW9Pg+eDd/UOqP3YB6yhBNNA9gMOw==",
+  "_location": "/threejs-model-loader",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "threejs-model-loader",
+    "name": "threejs-model-loader",
+    "escapedName": "threejs-model-loader",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/threejs-model-loader/-/threejs-model-loader-0.1.0.tgz",
+  "_shasum": "bd3306721665c34b1b42d991ddf90af861d5a14e",
+  "_spec": "threejs-model-loader",
+  "_where": "C:\\Users\\Hilly\\test-example\\node_modules",
+  "author": {
+    "name": "Garrett Johnson",
+    "email": "garrett.kjohnson@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/gkjohnson/threejs-model-loader/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "concurrently": "^4.0.1"
+  },
+  "deprecated": false,
+  "description": "THREE.js Model Loader that delegates to the appropriate geometry loader",
+  "devDependencies": {
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "collada-archive-loader": "^0.1.1",
+    "eslint-config-mdcs": "^4.2.3",
+    "rollup": "^0.66.6",
+    "script-loader": "^0.7.2",
+    "static-server": "^2.2.1",
+    "three": "^0.97.0",
+    "wc-loader": "^1.1.12",
+    "webpack": "^3.5.3"
+  },
+  "files": [
+    "src/*",
+    "umd/*"
+  ],
+  "homepage": "https://github.com/gkjohnson/threejs-model-loader#readme",
+  "keywords": [
+    "threejs",
+    "three-js",
+    "graphics",
+    "model",
+    "geometry",
+    "loader",
+    "javascript"
+  ],
+  "license": "MIT",
+  "main": "src/ModelLoader.js",
+  "name": "threejs-model-loader",
+  "peerDependencies": {
+    "three": "^0.91.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gkjohnson/threejs-model-loader.git"
+  },
+  "scripts": {
+    "build": "rollup -c && cd example && webpack",
+    "start": "concurrently --kill-others \"rollup -c -w\" \"static-server\""
+  },
+  "version": "0.1.0"
+}
