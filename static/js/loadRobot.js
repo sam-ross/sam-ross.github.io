@@ -67,8 +67,7 @@
             //packageName : '../../static'           // The equivalent of a (list of) ROS package(s):// directory (found this unnecessary)
         };
         loader.load(
-            '/../static/urdf/ar2_sim/ar2.urdf', 					// The path to the URDF within the package OR absolute
-            //'https://samross567.github.io/static/urdf/ar2_sim/ar2.urdf',      		// slower but had to use this path for it to work with github pages but the one above normally works           
+            '/../static/urdf/ar2_sim/ar2.urdf', 					// The path to the URDF within the package OR absolute           
             robot => { 
                 // The robot is loaded!  
                 robot.position.set(0, 0, 0);
