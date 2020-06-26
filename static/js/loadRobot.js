@@ -3,7 +3,7 @@
         var scene = new THREE.Scene();
         scene.background = new THREE.Color( 0xbfd1e5 );
         var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.02, 5000 );
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
+        //camera.lookAt(new THREE.Vector3(0, 0, 0));
 
         //Add hemisphere light
         let hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.1 );
@@ -51,8 +51,11 @@
 
         var controls = new OrbitControls( camera, renderer.domElement );
         camera.position.set( 0, 30, 70 );
-        //controls.target.set(0, 50, 0);
+        controls.target.set(0, 20, 0);          // sets orbit position to roughly the center of the robot
         controls.update();
+
+        var boundingBox;
+        var center;
 
         // URDF-Loader code
         import { LoadingManager } from '../three/build/three.module.js';
@@ -73,16 +76,19 @@
                 robot.scale.set(70,70,70);          //robot was too small initially
                 robot.rotateX(-1.571);          //robot had a 90 degrees rotation initially
 
-                robot.castShadow = true;
-                robot.receiveShadow = true;
+                //robot.castShadow = true;
+                //robot.receiveShadow = true;
 
                 scene.add( robot );
+
+                
+
+                
             }
+            
         );
-
         
-
-
+        
         //code for the block
         let pos = {x: 0, y: 0, z: 0};
         let scale = {x: 50, y: 2, z: 50}; //sets block dimensions
@@ -96,10 +102,7 @@
         blockPlane.receiveShadow = true;
 
         scene.add(blockPlane);
-
-
-
-
+        
 
         function animate() {
 
