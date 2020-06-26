@@ -51,7 +51,8 @@
 
         var controls = new OrbitControls( camera, renderer.domElement );
         camera.position.set( 0, 30, 70 );
-        controls.target.set(0, 20, 0);          // manually sets orbit position to roughly the center of the robot
+        //controls.target.set(0, 20, 0);          // For the AR2 robot (sets orbit position to roughly the center of the robot)
+        controls.target.set(0, 0, 0);           // For the R2D2 robot (sets orbit position to roughly the center of the robot)
         controls.update();
 
         var boundingBox;
@@ -64,17 +65,19 @@
         const manager = new LoadingManager();
         const loader = new URDFLoader(manager);
         loader.packages = {
-            //packageName : '../../static'           // The equivalent of a (list of) ROS package(s):// directory (found this unnecessary)
+            //packageName : '../../static'           // The equivalent of a (list of) ROS package(s):// directory (unnecessary)
         };
         loader.load(
-            '/../static/urdf/ar2_sim/ar2.urdf', 					// The path to the URDF within the package OR absolute           
+            //'static/urdf/T12/urdf/T12_flipped.URDF',
+            '/../static/urdf/r2d2/r2d2.urdf',
+            //'/../static/urdf/ar2_sim/ar2.urdf',                    // The path to the URDF within the package OR absolute
             robot => { 
                 // The robot is loaded!  
-                robot.position.set(0, 0, 0);
+                robot.position.set(0, 0, 0)
                 robot.scale.set(70,70,70);          //robot was too small initially
                 robot.rotateX(-1.571);          //robot had a 90 degrees rotation initially
 
-                //robot.castShadow = true;			//doesn't work
+                //robot.castShadow = true;
                 //robot.receiveShadow = true;
 
                 scene.add( robot );
@@ -86,7 +89,7 @@
             
         );
         
-        
+        /*
         //code for the block
         let pos = {x: 0, y: 0, z: 0};
         let scale = {x: 50, y: 2, z: 50}; //sets block dimensions
@@ -100,7 +103,7 @@
         blockPlane.receiveShadow = true;
 
         scene.add(blockPlane);
-        
+        */
 
         function animate() {
 
