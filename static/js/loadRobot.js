@@ -69,7 +69,7 @@
         loader.load(
             //'static/urdf/T12/urdf/T12_flipped.URDF',
             //'static/urdf/r2d2/r2d2.urdf',
-            'static/urdf/ar2_sim/ar2.urdf',                    // The path to the URDF within the package OR absolute
+            '../static/urdf/ar2_sim/ar2.urdf',                    // The path to the URDF within the package OR absolute
             robot => { 
                 // The robot is loaded!  
                 robot.position.set(0, 0, 0)
