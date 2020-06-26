@@ -51,7 +51,7 @@
 
         var controls = new OrbitControls( camera, renderer.domElement );
         camera.position.set( 0, 30, 70 );
-        controls.target.set(0, 20, 0);          // sets orbit position to roughly the center of the robot
+        controls.target.set(0, 20, 0);          // manually sets orbit position to roughly the center of the robot
         controls.update();
 
         var boundingBox;
@@ -64,19 +64,18 @@
         const manager = new LoadingManager();
         const loader = new URDFLoader(manager);
         loader.packages = {
-            //packageName : '../../static'           // The equivalent of a (list of) ROS package(s):// directory (unnecessary)
+            //packageName : '../../static'           // The equivalent of a (list of) ROS package(s):// directory (found this unnecessary)
         };
         loader.load(
-            //'static/urdf/T12/urdf/T12_flipped.URDF',
-            //'static/urdf/r2d2/r2d2.urdf',
-            'https://samross567.github.io/static/urdf/ar2_sim/ar2.urdf',                    // The path to the URDF within the package OR absolute
+            '/../static/urdf/ar2_sim/ar2.urdf', 					// The path to the URDF within the package OR absolute
+            //'https://samross567.github.io/static/urdf/ar2_sim/ar2.urdf',      		// slower but had to use this path for it to work with github pages but the one above normally works           
             robot => { 
                 // The robot is loaded!  
-                robot.position.set(0, 0, 0)
+                robot.position.set(0, 0, 0);
                 robot.scale.set(70,70,70);          //robot was too small initially
                 robot.rotateX(-1.571);          //robot had a 90 degrees rotation initially
 
-                //robot.castShadow = true;
+                //robot.castShadow = true;			//doesn't work
                 //robot.receiveShadow = true;
 
                 scene.add( robot );
