@@ -140,9 +140,9 @@
             var loader = new STLLoader();
             var material = new THREE.MeshPhongMaterial( { color: 0xAAAAAA, specular: 0x111111, shininess: 200 } );
             loader.load( 
-                '/../static/modelsSTL/car.stl',
+                //'/../static/modelsSTL/car.stl',
                 //'/../static/modelsSTL/car_improved.stl',
-                //'/../static/modelsSTL/car_sphere_fixed.stl',
+                '/../static/modelsSTL/car_sphere_fixed.stl',
                 //'/../static/modelsSTL/car_sphere_fixed_retro.stl',
                 //'/../static/modelsSTL/car_sphere_fixed_retro2.stl',
 
