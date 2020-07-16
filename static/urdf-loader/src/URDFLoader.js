@@ -368,7 +368,8 @@ class URDFLoader {
 
             const matNodes = [ ...node.children ];
             const material = new THREE.MeshPhongMaterial();
-
+			
+			
             material.name = node.getAttribute('name') || '';
             matNodes.forEach(n => {
 
@@ -400,7 +401,7 @@ class URDFLoader {
 
                 }
             });
-
+			
             return material;
 
         }
