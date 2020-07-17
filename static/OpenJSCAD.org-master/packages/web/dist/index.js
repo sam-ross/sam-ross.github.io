@@ -95000,7 +95000,7 @@ function loadInitialExample(me, params) {
     } else if (isInLocalStorage) {
       loadLocalStorage(localStorage.editorContent, params);
     } else {
-      fetchExample('/../OpenJSCAD.org-master/packages/web/examples/' + examples[0].file, undefined, params);
+      fetchExample('/../static/OpenJSCAD.org-master/packages/web/examples/' + examples[0].file, undefined, params);
     }
   }
 }
