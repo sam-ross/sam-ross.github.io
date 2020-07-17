@@ -95001,7 +95001,7 @@ function loadInitialExample(me, params) {
       loadLocalStorage(localStorage.editorContent, params);
     } else {
       fetchExample('../OpenJSCAD.org-master/packages/web/examples/' + examples[0].file, undefined, params);
-	  //../OpenJSCAD.org-master/packages/web/imgs/busy.gif\
+	  
     }
   }
 }
