@@ -142,14 +142,14 @@
             loader.load( 
                 //'/../static/modelsSTL/car.stl',
                 //'/../static/modelsSTL/car_improved.stl',
-                '/../static/modelsSTL/car_sphere_fixed.stl',
+                //'/../static/modelsSTL/car_sphere_fixed.stl',
                 //'/../static/modelsSTL/car_sphere_fixed_retro.stl',
                 //'/../static/modelsSTL/car_sphere_fixed_retro2.stl',
 
                 //'/../static/modelsSTL/downloaded_cottage.stl',
                 //'/../static/modelsSTL/downloaded_sea_urchin.stl',
 
-                //'/../static/modelsSTL/OpenJSCAD_cube_sphere.stl',
+                '/../static/modelsSTL/OpenJSCAD_cube_sphere.stl',
 
                 //'/../static/modelsSTL/binary/pr2_head_pan.stl',
                 //'/../static/modelsSTL/binary/colored.stl', 
