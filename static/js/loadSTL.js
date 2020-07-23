@@ -2,16 +2,18 @@
         import { OrbitControls } from '../three/examples/jsm/controls/OrbitControls.js'
         import { LoadingManager } from '../three/build/three.module.js';
         import URDFLoader from '../urdf-loader/src/URDFLoader.js';
-        import { STLLoader } from '../three/examples/jsm/loaders/STLLoader.js'
+        import { STLLoader } from '../three/examples/jsm/loaders/STLLoaderOpenJSCAD.js'
         
         let scene, camera, controls, renderer, centerHeight, centerPosition;
+        var hasBeenRanOnce = false;
+        //var count = 1;
 
         function start(){
             setUpGraphics();
             setUpOrbitControls();
             //loadURDF();
             //createBlock();
-            loadSTL();
+            //loadSTL();
             animate();
         }
 
@@ -113,6 +115,10 @@
                     robot.scale.set(70,70,70);          // robot was too small initially
                     robot.rotateX(-1.571);          // robot had a 90 degrees rotation initially
 
+                    controls.target.set(0, 15, 0);         
+                    controls.update();
+
+
                     scene.add( robot );
                 }
             );
@@ -140,57 +146,8 @@
             var loader = new STLLoader();
             var material = new THREE.MeshPhongMaterial( { color: 0xAAAAAA, specular: 0x111111, shininess: 200 } );
             loader.load( 
-                //'/../static/modelsSTL/car.stl',
-                //'/../static/modelsSTL/car_improved.stl',
-                //'/../static/modelsSTL/car_sphere_fixed.stl',
-                //'/../static/modelsSTL/car_sphere_fixed_retro.stl',
-                //'/../static/modelsSTL/car_sphere_fixed_retro2.stl',
-
-                //'/../static/modelsSTL/downloaded_cottage.stl',
-                //'/../static/modelsSTL/downloaded_sea_urchin.stl',
-
-                '/../static/modelsSTL/OpenJSCAD_cube_sphere.stl',
-
-                //'/../static/modelsSTL/binary/pr2_head_pan.stl',
-                //'/../static/modelsSTL/binary/colored.stl', 
-                //'/../static/modelsSTL/ascii/slotted_disk.stl',
-            
-                function ( geometry ) {
-                
-                    // use the same code to load STL as above
-                    if (geometry.hasColors) {
-                        material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
-                    } else { 
-                        console.log("This STL file doesn't have any colour properties, so the default will be used");
-                    }
-                    let mesh = new THREE.Mesh( geometry, material );
-					mesh.rotation.set( - Math.PI / 2, 0, 0 );
-                    //mesh.rotateX(-1.571); 
-                    mesh.castShadow = true;
-                    mesh.receiveShadow = true;
-
-                    var box = new THREE.Box3().setFromObject( mesh );
-                    
-                    centerHeight = (box.max.y-box.min.y) / 2;
-                    centerPosition = box.max.y - centerHeight;
-
-                    controls.target.set(0, centerPosition, 0);           // For the R2D2 robot (sets orbit position to roughly the center of the robot)
-                    controls.update();
-
-                    console.log("Vertical center position: " + centerPosition);
-
-                    scene.add( mesh );
-
-
-                }
-            );
-        }
-
-        function loadNewSTL(src) {
-            var loader = new STLLoader();
-            var material = new THREE.MeshPhongMaterial( { color: 0xAAAAAA, specular: 0x111111, shininess: 200 } );
-            loader.load( 
-                src,
+                // '/../static/modelsSTL/car.stl',
+                '/../static/modelsSTL/test.stl',
                 //'/../static/modelsSTL/car_improved.stl',
                 //'/../static/modelsSTL/car_sphere_fixed.stl',
                 //'/../static/modelsSTL/car_sphere_fixed_retro.stl',
@@ -206,7 +163,7 @@
                 //'/../static/modelsSTL/ascii/slotted_disk.stl',
             
                 function ( geometry ) {
-                
+                    console.log(geometry);
                     // use the same code to load STL as above
                     if (geometry.hasColors) {
                         material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
@@ -224,7 +181,7 @@
                     centerHeight = (box.max.y-box.min.y) / 2;
                     centerPosition = box.max.y - centerHeight;
 
-                    controls.target.set(0, centerPosition, 0);           // For the R2D2 robot (sets orbit position to roughly the center of the robot)
+                    controls.target.set(0, centerPosition, 0);           
                     controls.update();
 
                     console.log("Vertical center position: " + centerPosition);
@@ -234,6 +191,58 @@
 
                 }
             );
+        }
+
+        function loadNewSTL() {
+            var loader = new STLLoader();
+            var material = new THREE.MeshPhongMaterial( { color: 0xAAAAAA, specular: 0x111111, shininess: 200 } );
+            loader.load( 
+                parent.export_stl,
+            
+                function ( geometry ) {
+                    console.log(geometry);
+                
+                    // use the same code to load STL as above
+                    if (geometry.hasColors) {
+                        material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
+                    } else { 
+                        console.log("This STL file doesn't have any colour properties, so the default will be used");
+                    }
+                    let mesh = new THREE.Mesh( geometry, material );
+					mesh.rotation.set( - Math.PI / 2, 0, 0 );
+                    //mesh.rotateX(-1.571); 
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = true;
+
+                    /*
+                    if(count==1){
+                        console.log("1st mesh");
+                        //mesh.position.set(-4.6941E-06, 0.054174, 0.038824);
+                    }else if(count == 2){
+                        console.log("2nd mesh");
+                        //mesh.position.set(-0.022706, 0.04294, -0.12205);
+                    }
+                    */
+
+                    var box = new THREE.Box3().setFromObject( mesh );
+                    
+                    centerHeight = (box.max.y-box.min.y) / 2;
+                    centerPosition = box.max.y - centerHeight;
+
+                    controls.target.set(0, centerPosition, 0);         
+                    controls.update();
+
+                    console.log("Vertical center position: " + centerPosition);
+
+                    
+                    scene.add( mesh );
+
+
+                }
+            );
+            parent.export_stl = '';
+            hasBeenRanOnce = false;
+            //count++;
         }
 
 
@@ -266,6 +275,13 @@
             // required if controls.enableDamping or controls.autoRotate are set to true
             //controls.update();
             renderer.render( scene, camera );
+
+            if(parent.export_stl !== "" && hasBeenRanOnce == false){
+                console.log("export found");
+                //console.log(parent.export_stl);
+                hasBeenRanOnce = true;
+                loadNewSTL();
+            }
         };
 
         start();

@@ -392,7 +392,7 @@ const formats = {
     convertCAG: false
   },
   stla: {
-    displayName: 'STL (ASCII)',
+    displayName: 'Threejs Export - STL (ASCII)',
     description: 'STereoLithography, ASCII',
     extension: 'stl',
     mimetype: 'application/sla',
@@ -407,15 +407,6 @@ const formats = {
     convertCSG: true,
     convertCAG: false
   },
-  stlc: {
-    displayName: 'Test',
-    description: 'STereoLithography, ASCII',
-    extension: 'stl',
-    mimetype: 'application/sla',
-    convertCSG: true,
-    convertCAG: false
-  },
-
   amf: {
     displayName: 'AMF (experimental)',
     description: 'Additive Manufacturing File Format',
@@ -19271,6 +19262,8 @@ function serialize (CSG, options) {
   })
   result += 'endsolid csg.js\n'
   options && options.statusCallback && options.statusCallback({progress: 100})
+  
+  parent.export_stl = result;
   return [result]
 }
 
@@ -95000,7 +94993,7 @@ function loadInitialExample(me, params) {
     } else if (isInLocalStorage) {
       loadLocalStorage(localStorage.editorContent, params);
     } else {
-      //fetchExample('../OpenJSCAD.org-master/packages/web/examples/' + examples[0].file, undefined, params);
+      fetchExample('../OpenJSCAD.org-master/packages/web/examples/' + examples[0].file, undefined, params);
     }
   }
 }
