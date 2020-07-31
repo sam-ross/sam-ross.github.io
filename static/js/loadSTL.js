@@ -354,7 +354,11 @@
                 importAndCreateCylinder();
                 importAndCreateArm();
             }else{
-                console.log("Currently only supporting block, cylinder and arm (arm is optional)")
+                //console.log("Currently only supporting block, cylinder and arm (arm is optional)");
+				console.log("3 objects");
+                importAndCreateBox();
+                importAndCreateCylinder();
+                importAndCreateArm();
             }
             
         }
