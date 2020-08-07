@@ -94861,7 +94861,7 @@ function createExamples(me) {
         src += '</td><td class="examplesSeparator" widthx=' + colp + ' valign=top>';
       }
       if (examples[i].spacing) src += '<p/>';
-      src += '<li><a class=\'..\OpenJSCAD.org-master\packages\web\examples\' data-path=' + ('../OpenJSCAD.org-master/packages/examples/' + examples[i].file) + ' href=\'#..\OpenJSCAD.org-master\packages\web\examples\'> + ' + examples[i].title + ' </a>\n';
+      src += '<li><a class=\'..\OpenJSCAD.org-master\packages\examples\' data-path=' + ('../OpenJSCAD.org-master/packages/examples/' + examples[i].file) + ' href=\'#..\OpenJSCAD.org-master\packages\examples\'> + ' + examples[i].title + ' </a>\n';
       if (examples[i].type) src += ' <span class=type>(' + examples[i].type + ')</span></a>';
       if (examples[i].new) src += ' <span class=newExample>new</span></a>';
     }
@@ -95036,7 +95036,7 @@ function loadInitialExample(me, params) {
     } else if (isInLocalStorage) {
       loadLocalStorage(localStorage.editorContent, params);
     } else {
-      fetchExample('../OpenJSCAD.org-master/packages/web/examples/' + examples[0].file, undefined, params);
+      fetchExample('../OpenJSCAD.org-master/packages/examples/' + examples[0].file, undefined, params);
     }
   }
 }
