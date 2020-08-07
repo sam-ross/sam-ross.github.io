@@ -488,7 +488,7 @@ function supportedFormatsForObjects (objects) {
   let foundCSG = false
   let foundCAG = false
   parent.object_array_length = objects.length;
-	console.log("Array length: " + parent.object_array_length);
+	console.log("Length: " + parent.object_array_length);
   for (let i = 0; i < objects.length; i++) {
     if (isCSG(objects[i])) { foundCSG = true }
     if (isCAG(objects[i])) { foundCAG = true }
@@ -531,10 +531,11 @@ function prepareOutput (objects, params) {
 	console.log("1");
     object = objects
   } else {
+	  console.log("2");
     const formatInfo = formats[format]
     //object = mergeSolids2(objects, formatInfo)
 	object = objects[parent.counter];
-	console.log("Object " + (parent.counter + 1));
+	console.log("Object " + parent.counter);
   }
 
   const metaData = {
@@ -569,7 +570,7 @@ function prepareOutput (objects, params) {
   }
   const data = outputFormatHandlers[format].serialize(object, metaData)
   const mimeType = outputFormatHandlers[format].mimeType
-  //console.log("data: " + data);
+  console.log("data: " + data);
   return {data, mimeType}
 }
 
@@ -93066,7 +93067,15 @@ var generateOutputFileFileSystem = require('../io/generateOutputFileFileSystem')
 
 function generateOutputFile(extension, blob, onDone, context) {
   try {
+	  console.log("before");
     generateOutputFileFileSystem(extension, blob, onDone.bind(context));
+	//exportCounter1++;
+	//console.log(exportCounter1);
+	console.log("Counter at export: " + parent.counter);
+	console.log("Boolean at export: " + parent.file_exported);
+	parent.export_counter++;
+	parent.file_exported = false;
+	console.log("after");
   } catch (e) {
     generateOutputFileBlobUrl(extension, blob, onDone.bind(context));
   }
@@ -93437,24 +93446,25 @@ Processor.prototype = {
     this.statusbuttons.appendChild(this.formatDropdown);
     this.generateOutputFileButton = document.createElement('button');
     this.generateOutputFileButton.onclick = function (e) {
+		/*
+		if(parent.export_counter < parent.object_array_length){	
+			parent.file_exported = true;
+			console.log("Button clicked");
+			that.generateOutputFile();
+		}else{
+			console.log("All meshes already exported");
+		}*/
 		
 		for(var index = 0; index<parent.object_array_length; index++){
 
 			setTimeout(function(){
 				that.generateOutputFile();
-			},((index+1)*400));	
+			},((index+1)*200));	
 			
 		}
 		
 		
     };
-	
-	/*
-	this.generatePhysicsData = document.createElement('button');
-	this.generatePhysicsData.onclick = function (e) {
-		console.log("success");
-    };
-	*/
     this.statusbuttons.appendChild(this.generateOutputFileButton);
     this.downloadOutputFileLink = document.createElement('a');
     this.downloadOutputFileLink.className = 'downloadOutputFileLink'; // so we can css it
@@ -94694,13 +94704,27 @@ function setUpEditor(divname, gProcessor) {
     exec: runExec
   });
   document.body.addEventListener('keydown', function (evt) {
-    if (evt.key === 'F5') {
+    if (evt.key === 'F5' || parent.file_exported == true) {
       evt.preventDefault();
       //console.log('no accidental reloading!')
       runExec(gEditor);
     }
   });
- 
+  
+  document.addEventListener("mouseup", function(evt) {
+	  console.log("click");
+	  setTimeout(function(){
+		  console.log("1 second after click");
+		  if(parent.file_exported == true){
+			console.log("Export counter at f5: " + parent.export_counter);
+			console.log("File exported at f5: " + parent.file_exported);
+			parent.file_exported = false;
+
+			runExec(gEditor);
+			console.log("run complete");
+		}
+	  },500);	  
+  });
   
   
   gEditor.commands.addCommand({

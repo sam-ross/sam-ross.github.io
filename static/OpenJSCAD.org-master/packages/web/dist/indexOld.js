@@ -6,8 +6,6 @@ const createJscadFunction = require('../code-loading/jscad-function')
 const { replaceIncludes } = require('../code-loading/replaceIncludes')
 const { resolveIncludesHttp } = require('../code-loading/resolveIncludesHttp')
 const { toArray } = require('../utils/arrays')
-var fileExported = false;
-var exportCounter = 0;
 
 /**
  * evaluate script & rebuild solids, in main thread
@@ -196,7 +194,6 @@ module.exports = function (self) {
         }
 		else if (objects.length != 0) {
           console.log('Objects length: ' + objects.length);
-		  
         }
         self.postMessage({cmd: 'rendered', objects})
       }
@@ -487,8 +484,6 @@ function supportedFormatsForObjects (objects) {
   let objectFormats = []
   let foundCSG = false
   let foundCAG = false
-  parent.object_array_length = objects.length;
-	console.log("Array length: " + parent.object_array_length);
   for (let i = 0; i < objects.length; i++) {
     if (isCSG(objects[i])) { foundCSG = true }
     if (isCAG(objects[i])) { foundCAG = true }
@@ -528,13 +523,10 @@ function prepareOutput (objects, params) {
   let object
 
   if (format === 'jscad' || format === 'js') {
-	console.log("1");
     object = objects
   } else {
     const formatInfo = formats[format]
-    //object = mergeSolids2(objects, formatInfo)
-	object = objects[parent.counter];
-	console.log("Object " + (parent.counter + 1));
+    object = mergeSolids2(objects, formatInfo)
   }
 
   const metaData = {
@@ -569,7 +561,6 @@ function prepareOutput (objects, params) {
   }
   const data = outputFormatHandlers[format].serialize(object, metaData)
   const mimeType = outputFormatHandlers[format].mimeType
-  //console.log("data: " + data);
   return {data, mimeType}
 }
 
@@ -19268,7 +19259,6 @@ arguments[4][94][0].apply(exports,arguments)
 },{"dup":94}],97:[function(require,module,exports){
 
 function serialize (CSG, options) {
-	//console.log("CSG: " + CSG);
   options && options.statusCallback && options.statusCallback({progress: 0})
   var result = 'solid csg.js\n'
   CSG.polygons.map(function (p, i) {
@@ -19279,8 +19269,7 @@ function serialize (CSG, options) {
   options && options.statusCallback && options.statusCallback({progress: 100})
   
   parent.export_stl = result;
-  //console.log(result);
-  
+  console.log(result);
   return [result]
 }
 
@@ -33990,19 +33979,14 @@ function mergeSolids2 (objects, params) {
   for (let i = 0; i < objects.length; i++) {
     if (foundCSG === true && isCAG(objects[i])) {
       object = object.union(objects[i].extrude({offset: [0, 0, 0.1]})) // convert CAG to a thin solid CSG
-	  console.log("a");
       continue
     }
     if (foundCAG === true && isCSG(objects[i])) {
-		console.log("b");
       continue
     }
-	console.log("c");
-	console.log(objects[i]);
     object = object.union(objects[i])
   }
-  
-  console.log(object);
+
   return object
 }
 
@@ -93062,7 +93046,6 @@ module.exports = { createConversionWorker: createConversionWorker };
 
 var generateOutputFileBlobUrl = require('../io/generateOutputFileBlobUrl');
 var generateOutputFileFileSystem = require('../io/generateOutputFileFileSystem');
-//var exportCounter1 = 0;
 
 function generateOutputFile(extension, blob, onDone, context) {
   try {
@@ -93118,7 +93101,6 @@ module.exports = function generateOutputFileFileSystem(extension, blob, callback
   // create a random directory name:
   var dirname = 'OpenJsCadOutput1_' + parseInt(Math.random() * 1000000000, 10) + '_' + extension;
   var filename = 'output.' + extension; // FIXME this should come from this.filename
-  console.log("File exported");
   request(TEMPORARY, 20 * 1024 * 1024, function (fs) {
     fs.root.getDirectory(dirname, { create: true, exclusive: true }, function (dirEntry) {
       dirEntry.getFile(filename, { create: true, exclusive: true }, function (fileEntry) {
@@ -93437,24 +93419,8 @@ Processor.prototype = {
     this.statusbuttons.appendChild(this.formatDropdown);
     this.generateOutputFileButton = document.createElement('button');
     this.generateOutputFileButton.onclick = function (e) {
-		
-		for(var index = 0; index<parent.object_array_length; index++){
-
-			setTimeout(function(){
-				that.generateOutputFile();
-			},((index+1)*400));	
-			
-		}
-		
-		
+      that.generateOutputFile();
     };
-	
-	/*
-	this.generatePhysicsData = document.createElement('button');
-	this.generatePhysicsData.onclick = function (e) {
-		console.log("success");
-    };
-	*/
     this.statusbuttons.appendChild(this.generateOutputFileButton);
     this.downloadOutputFileLink = document.createElement('a');
     this.downloadOutputFileLink.className = 'downloadOutputFileLink'; // so we can css it
@@ -94700,9 +94666,6 @@ function setUpEditor(divname, gProcessor) {
       runExec(gEditor);
     }
   });
- 
-  
-  
   gEditor.commands.addCommand({
     name: 'viewerReset',
     bindKey: { win: 'Ctrl-Return', mac: 'Command-Return' },

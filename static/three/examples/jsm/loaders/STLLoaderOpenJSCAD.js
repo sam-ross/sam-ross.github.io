@@ -168,7 +168,7 @@ STLLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 		}
 
 		function parseBinary( data ) {
-
+			console.log("Binary");
 			var reader = new DataView( data );
 			var faces = reader.getUint32( 80, true );
 
@@ -294,6 +294,11 @@ STLLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 			var groupCount = 0;
 			var startVertex = 0;
 			var endVertex = 0;
+			
+			var face;
+			var faces = geometry.faces;
+			var vertices1 = geometry.vertices;
+			var triangles = [];
 
 			while ( ( result = patternSolid.exec( data ) ) !== null ) {
 
@@ -318,8 +323,20 @@ STLLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 					}
 
 					while ( ( result = patternVertex.exec( text ) ) !== null ) {
-
+						//console.log("result1: " + result[1] + "   result2: " + result[2] + "    result3: " + result[3]);
+						
+						
 						vertices.push( parseFloat( result[ 1 ] ), parseFloat( result[ 2 ] ), parseFloat( result[ 3 ] ) );
+						
+						//face = geometry.faces[faceCounter];
+						/*
+						triangles.push([
+							{ x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
+							{ x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
+							{ x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z }
+						]);
+						*/
+						
 						normals.push( normal.x, normal.y, normal.z );
 						vertexCountPerFace ++;
 						endVertex ++;
@@ -341,7 +358,23 @@ STLLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 						console.error( 'THREE.STLLoader: Something isn\'t right with the vertices of face number ' + faceCounter );
 
 					}
+					
+					/*
+					if ( face instanceof THREE.Face3) {
 
+						triangles.push([
+							{ x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
+							{ x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
+							{ x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z }
+						]);
+
+					} 
+					*/
+					
+					
+					
+					
+					//console.log(faceCounter);
 					faceCounter ++;
 
 				}
@@ -357,7 +390,7 @@ STLLoader.prototype = Object.assign( Object.create( Loader.prototype ), {
 			geometry.setAttribute( 'position', new Float32BufferAttribute( vertices, 3 ) );
 			geometry.setAttribute( 'normal', new Float32BufferAttribute( normals, 3 ) );
 			
-			console.log(geometry);
+			//console.log("Faces"+geometry.faces[0]);
 			return geometry;
 
 		}

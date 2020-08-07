@@ -2892,7 +2892,7 @@ Object.assign( Quaternion.prototype, {
 				break;
 
 			default:
-				console.warn( 'THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order );
+				//console.warn( 'THREE.Quaternion: .setFromEuler() encountered an unknown order: ' + order );
 
 		}
 
@@ -5148,7 +5148,7 @@ Object.assign( Euler.prototype, {
 
 			default:
 
-				console.warn( 'THREE.Euler: .setFromRotationMatrix() encountered an unknown order: ' + order );
+				//console.warn( 'THREE.Euler: .setFromRotationMatrix() encountered an unknown order: ' + order );
 
 		}
 
@@ -9752,12 +9752,13 @@ function DirectGeometry() {
 Object.assign( DirectGeometry.prototype, {
 
 	computeGroups: function ( geometry ) {
-
+		
 		var group;
 		var groups = [];
 		var materialIndex = undefined;
 
 		var faces = geometry.faces;
+		console.log("Here123");
 
 		for ( var i = 0; i < faces.length; i ++ ) {
 
@@ -9996,6 +9997,24 @@ Object.assign( DirectGeometry.prototype, {
 	}
 
 } );
+
+/*
+function getTrianglesArray(geometry) {
+	
+	var i, vertices, face, faces, triangles = [];
+		faces = geometry.faces;
+		vertices = geometry.vertices;
+		for ( i = 0; i < faces.length; i++ ) {
+			face = geometry.faces[i];
+				triangles.push([
+					{ x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
+					{ x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
+					{ x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z }
+				]);
+		}
+	return triangles;
+}
+*/
 
 /**
  * @author mrdoob / http://mrdoob.com/

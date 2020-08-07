@@ -4,22 +4,10 @@
         import URDFLoader from '../urdf-loader/src/URDFLoader.js';
         import { STLLoader } from '../three/examples/jsm/loaders/STLLoaderOpenJSCAD.js'
         
-        let scene, camera, controls, renderer, centerX, centerY, centerZ, physicsWorld, tmpTrans, clock, rigidBodies = [];
+        let scene, camera, controls, renderer, centerHeight, centerPosition, physicsWorld, boxBody, tmpTrans, clock, rigidBodies = [];
         var hasBeenRanOnce = false;
-        var objectArray;
-        var firstObject = true;
-
         const STATE = { DISABLE_DEACTIVATION : 4 }
-        let moveDirection = { up:0, down:0 }        //  moveDirection array
-
-        /*
-        let varName, nextStart, xyzIndex, xyzValueStr, xyzNumber, char, pivot, booleanValue, pivot2, code;
-        let pivot1Created = false;
-        var numberOfObjects = 0;
-        let cylinder = null;
-        let cylinderBody = null, boxBody = null, armBody=null, cylinderPivot = null, boxPivot = null, cylinderPivot2 = null, armPivot2 = null;     //  declared globally so can be used in the function for rotating the motor
-        */
-        
+        //var count = 1;
 
         //Ammojs Initialization
         Ammo().then( function ( AmmoLib ) {
@@ -32,7 +20,7 @@
             setupPhysicsWorld();
             setUpGraphics();
             setUpOrbitControls();
-            //dropBall();
+            dropBall();
             //loadURDF();
             //createBlock();
             //loadSTL();
@@ -61,37 +49,44 @@
             //camera.lookAt(new THREE.Vector3(0, 0, 0));
 
             /*
-            let x,y,z;
-            x=0;
-            y=-40;
-            z=0;
+            // Add hemisphere light
+            let hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.1 );
+            hemiLight.color.setHSL( 0.6, 0.6, 0.6 );
+            hemiLight.groundColor.setHSL( 0.1, 1, 0.4 );
+            hemiLight.position.set( 0, 50, 0 );
+            scene.add( hemiLight );
 
-            
-            //Arm Plane
+            // Add directional light
+            let dirLight = new THREE.DirectionalLight( 0xffffff , 1);
+            dirLight.color.setHSL( 0.1, 1, 0.95 );
+            dirLight.position.set( -1, 1.75, 1 );
+            dirLight.position.multiplyScalar( 100 );
+            scene.add( dirLight );
+
+            dirLight.castShadow = true;
+
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+
+            let d = 50;
+
+            dirLight.shadow.camera.left = -d;
+            dirLight.shadow.camera.right = d;
+            dirLight.shadow.camera.top = d;
+            dirLight.shadow.camera.bottom = -d;
+
+            dirLight.shadow.camera.far = 13500;
+            */
+
+
+            /*
+            // Plane
             var plane = new THREE.Mesh(
-                new THREE.PlaneBufferGeometry( 20, 20 ),
+                new THREE.PlaneBufferGeometry( 400, 400 ),
                 new THREE.MeshPhongMaterial( { color: 0x6f7175, specular: 0x101010 } )
             );
-            //plane.rotation.x = - Math.PI / 2;
-            plane.position.x = x;
-            plane.position.y = z;
-            plane.position.z = -y;
-            scene.add( plane );
-
-            plane.receiveShadow = true;
-
-
-            y=y+10;
-
-            //Arm Pivot
-            var plane = new THREE.Mesh(
-                new THREE.PlaneBufferGeometry( 20, 20 ),
-                new THREE.MeshPhongMaterial( { color: 0x6f7175, specular: 0x101010 } )
-            );
-            //plane.rotation.x = - Math.PI / 2;
-            plane.position.x = x;
-            plane.position.y = z;
-            plane.position.z = -y;
+            plane.rotation.x = - Math.PI / 2;
+            plane.position.y = - 8;
             scene.add( plane );
 
             plane.receiveShadow = true;
@@ -115,8 +110,6 @@
             renderer.gammaOutput = true;
 
             renderer.shadowMap.enabled = true;
-
-            window.addEventListener( 'resize', onWindowResize, false );
         
         }
         
@@ -153,6 +146,23 @@
                     scene.add( robot );
                 }
             );
+        }
+        
+
+        function createBlock(){
+            // code for the block
+            let pos = {x: 0, y: 0, z: 0};
+            let scale = {x: 50, y: 2, z: 50};       // sets block dimensions
+            
+            let blockPlane = new THREE.Mesh(new THREE.BoxBufferGeometry(), new THREE.MeshPhongMaterial({color: 0xa0afa4}));
+
+            blockPlane.position.set(pos.x, pos.y, pos.z);
+            blockPlane.scale.set(scale.x, scale.y, scale.z);
+
+            blockPlane.castShadow = true;
+            blockPlane.receiveShadow = true;
+
+            scene.add(blockPlane);
         }
 
 
@@ -207,7 +217,6 @@
             );
         }
 
-
         function loadNewSTL() {
             var loader = new STLLoader();
             var material = new THREE.MeshPhongMaterial( { color: 0xAAAAAA, specular: 0x111111, shininess: 200 } );
@@ -215,18 +224,14 @@
                 parent.export_stl,
             
                 function ( geometry ) {
-                    //console.log("Geometry: " + geometry);
+                    console.log(geometry);
                 
                     // use the same code to load STL as above
                     if (geometry.hasColors) {
                         material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
                     } else { 
                         console.log("This STL file doesn't have any colour properties, so the default will be used");
-                    
                     }
-                    //createCustomCollisionShape1(geometry);
-
-
                     let mesh = new THREE.Mesh( geometry, material );
 					mesh.rotation.set( - Math.PI / 2, 0, 0 );
                     //mesh.rotateX(-1.571); 
@@ -243,138 +248,46 @@
                     }
                     */
 
+                    var box = new THREE.Box3().setFromObject( mesh );
+                    
+                    centerHeight = (box.max.y-box.min.y) / 2;
+                    centerPosition = box.max.y - centerHeight;
+
+                    controls.target.set(0, centerPosition, 0);         
+                    controls.update();
+
+                    console.log("Vertical center position: " + centerPosition);
 
                     
-                    if(firstObject == true){
-                        var box = new THREE.Box3().setFromObject( mesh );
+                    scene.add( mesh );
 
-                        centerX = box.min.x
-                        centerY = box.min.y;
-                        centerZ = box.min.z;
-
-                        objectArray = new Array(parent.object_array_length);
-                        console.log("array created");
-                        firstObject = false;
-                    } else if(parent.object_array_length == parent.counter+1){
-                        var box = new THREE.Box3().setFromObject( mesh );
-
-                        centerX = box.max.x - ((box.max.x-centerX) / 2);
-                        centerY = box.max.y - ((box.max.y-centerY) / 2);
-                        centerZ = box.max.z - ((box.max.z-centerZ) / 2);
-
-                        controls.target.set(centerX, centerY, centerZ);         
-                        controls.update();
-
-                        console.log("Orbit center position: (" + centerX + ", " + centerY + ", " + centerZ + ")");
-                    }
-                    console.log("Object array position: " + parent.counter);
-                    objectArray[parent.counter] = mesh; 
-                    
-                    scene.add( objectArray[parent.counter] );
-                    
-
-                    //console.log("Face 1: " + geometry.faces[0]);
-
-                    /*
-                    //Custom collision shape code
-                    var i,
-                        width, height, depth,
-                        vertices, face, triangles = [];
-
-                    //Physijs.Mesh.call( this, geometry, material, mass );
-
-                    if ( !geometry.boundingBox ) {
-                        geometry.computeBoundingBox();
-                    }
-
-                    vertices = geometry.vertices;
-
-                    for ( i = 0; i < geometry.faces.length; i++ ) {
-                        face = geometry.faces[i];
-                        if ( face instanceof THREE.Face3) {
-            
-                            triangles.push([
-                                { x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
-                                { x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
-                                { x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z }
-                            ]);
-            
-                        } else if ( face instanceof THREE.Face4 ) {
-            
-                            triangles.push([
-                                { x: vertices[face.a].x, y: vertices[face.a].y, z: vertices[face.a].z },
-                                { x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
-                                { x: vertices[face.d].x, y: vertices[face.d].y, z: vertices[face.d].z }
-                            ]);
-                            triangles.push([
-                                { x: vertices[face.b].x, y: vertices[face.b].y, z: vertices[face.b].z },
-                                { x: vertices[face.c].x, y: vertices[face.c].y, z: vertices[face.c].z },
-                                { x: vertices[face.d].x, y: vertices[face.d].y, z: vertices[face.d].z }
-                            ]);
-            
-                        }
-                    }
-                    */
-                   //var triangles = [];
-                   //triangles = THREE.getTrianglesArray(geometry);
-                   //var collisionShape;
 
                 }
             );
-            parent.current_object++; 
             parent.export_stl = '';
             hasBeenRanOnce = false;
-            parent.export_fully_completed = true;
-            console.log("Export fully completed: " + parent.export_fully_completed + " " + (parent.counter+1));
-            parent.counter++;
-            if(parent.object_array_length == parent.counter){
-                console.log("All meshes exported successfully");
-                //createCustomCollisionShape()
-            }
-            
+            //count++;
         }
 
 
         function dropBall(){
-            var material = new THREE.MeshStandardMaterial( { color : 0x00cc00 } );
-
-            //create a triangular geometry
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push( new THREE.Vector3( -50, -50, 0 ) );
-            geometry.vertices.push( new THREE.Vector3(  50, -50, 0 ) );
-            geometry.vertices.push( new THREE.Vector3(  50,  50, 0 ) );
-
-            //create a new face using vertices 0, 1, 2
-            var normal = new THREE.Vector3( 0, 0, 1 ); //optional
-            var color = new THREE.Color( 0xffaa00 ); //optional
-            var materialIndex = 0; //optional
-            var face = new THREE.Face3( 0, 1, 2, normal, color, materialIndex );
-
-            //add the face to the geometry's faces array
-            geometry.faces.push( face );
-
-            //the face normals and vertex normals can be calculated automatically if not supplied above
-            geometry.computeFaceNormals();
-            geometry.computeVertexNormals();
-
-            scene.add( new THREE.Mesh( geometry, material ) );
-                /*
-            let pos = {x: 1, y: 200, z: 0};
-            let radius = 2;
+            let pos = {x: 0, y: 200, z: 0};
+            let scale = {x: 5, y: 5, z: 5};
             let quat = {x: 0, y: 0, z: 0, w: 1};
-            let mass = 1;
+            let mass = 2000;
 
             //threeJS Section
-            let ball = new THREE.Mesh(new THREE.SphereBufferGeometry(radius), new THREE.MeshPhongMaterial({color: 0xff0505}));
+            let box = new THREE.Mesh(new THREE.BoxBufferGeometry(), new THREE.MeshPhongMaterial({color: 0x0000FF}));
 
-            ball.position.set(pos.x, pos.y, pos.z);
+            box.position.set(pos.x, pos.y, pos.z);
+            box.scale.set(scale.x, scale.y, scale.z);
+
+            box.castShadow = true;
+            box.receiveShadow = true;
+
+            scene.add(box);
+
             
-            ball.castShadow = true;
-            ball.receiveShadow = true;
-
-            scene.add(ball);
-
-
             //Ammojs Section
             let transform = new Ammo.btTransform();
             transform.setIdentity();
@@ -382,55 +295,22 @@
             transform.setRotation( new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ) );
             let motionState = new Ammo.btDefaultMotionState( transform );
 
-            let colShape = new Ammo.btSphereShape( radius );
+            let colShape = new Ammo.btBoxShape( new Ammo.btVector3( scale.x * 0.5, scale.y * 0.5, scale.z * 0.5 ) );
             colShape.setMargin( 0.05 );
 
             let localInertia = new Ammo.btVector3( 0, 0, 0 );
             colShape.calculateLocalInertia( mass, localInertia );
 
             let rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, colShape, localInertia );
-            let body = new Ammo.btRigidBody( rbInfo );
-
+            boxBody = new Ammo.btRigidBody( rbInfo );
             
-            physicsWorld.addRigidBody( body );
+            boxBody.setFriction(4);
+            //boxBody.setRollingFriction(10);
+            boxBody.setActivationState(STATE.DISABLE_DEACTIVATION);
+            physicsWorld.addRigidBody( boxBody );
+            box.userData.physicsBody = boxBody;  
+            rigidBodies.push(box);
             
-            ball.userData.physicsBody = body;
-            rigidBodies.push(ball);
-            */
-        }
-
-
-        function createRigidBody( threeObject, physicsShape, mass, pos, quat ) {
-
-            threeObject.position.copy( pos );
-            threeObject.quaternion.copy( quat );
-
-            var transform = new Ammo.btTransform();
-            transform.setIdentity();
-            transform.setOrigin( new Ammo.btVector3( pos.x, pos.y, pos.z ) );
-            transform.setRotation( new Ammo.btQuaternion( quat.x, quat.y, quat.z, quat.w ) );
-            var motionState = new Ammo.btDefaultMotionState( transform );
-
-            var localInertia = new Ammo.btVector3( 0, 0, 0 );
-            physicsShape.calculateLocalInertia( mass, localInertia );
-
-            var rbInfo = new Ammo.btRigidBodyConstructionInfo( mass, motionState, physicsShape, localInertia );
-            var body = new Ammo.btRigidBody( rbInfo );
-
-            threeObject.userData.physicsBody = body;
-
-            scene.add( threeObject );
-
-            if ( mass > 0 ) {
-                rigidBodies.push( threeObject );
-
-                // Disable deactivation
-                body.setActivationState( 4 );
-            }
-
-            physicsWorld.addRigidBody( body );
-
-            return body;
         }
 
 
@@ -452,16 +332,6 @@
             directionalLight.shadow.camera.far = 4;
 
             directionalLight.shadow.bias = - 0.002;
-
-        }
-
-
-        function onWindowResize() {
-
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-
-            renderer.setSize( window.innerWidth, window.innerHeight );
 
         }
 
@@ -491,9 +361,6 @@
         function animate() {
 
             let deltaTime = clock.getDelta();
-
-            
-
             updatePhysics( deltaTime );
 
             requestAnimationFrame( animate );
@@ -506,11 +373,8 @@
                 console.log("export found");
                 //console.log(parent.export_stl);
                 hasBeenRanOnce = true;
-                //console.log(parent.openjscad_code);
-
+                console.log(parent.openjscad_code);
                 loadNewSTL();
-
-                //loadAmmoObjects();
             }
         };
         
