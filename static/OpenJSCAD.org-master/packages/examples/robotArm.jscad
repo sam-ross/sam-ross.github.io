@@ -1,0 +1,103 @@
+
+var objects = new Array();
+
+function addObjectsToArray() {
+    var base, swivelCylinder, swivelAttachment, arm1, arm2, head;
+    
+    base = createBase();
+    swivelCylinder = createSwivelCylinder();
+    swivelAttachment = createSwivelAttachment();
+    arm1 = createArm1();
+    arm2 = createArm2();
+    head = createHead();
+    
+    objects.push(base, swivelCylinder, swivelAttachment, arm1, arm2, head);
+}
+
+
+function main() {
+   addObjectsToArray();
+   return objects;
+}
+
+
+function createBase(){
+    var sphere1, cube1, cube2;
+    sphere1 = sphere(5).scale([2.5,2.5,1]).translate([0,0,0]);
+    cube1 = cube({size:[50,50,10], center:true}).translate([0,0,-5]);
+    cube2 = cube({size:[50,50,10], center:true}).translate([0,0,7]);
+    return difference(sphere1,cube1,cube2);
+}
+
+
+function createSwivelCylinder(){
+    return cylinder({r:5,h:5}).scale([1.5,1.5,1.5]).translate([0,0,1.9]);
+}
+
+
+function createSwivelAttachment(){
+    var cylinder1, cylinder2, cylinder3, cylinder4, cylinderDifference, cube2, cube3, cylinderDifference2;
+    cylinder1 = cylinder({r:5.6,h:1}).scale([1.5,1.5,1.5]).translate([0,0,9.3]);
+    
+    cylinder2 = cylinder({r:3,h:7}).scale([1.5,1.5,1.5]).translate([0,0,10.7]);
+    cylinder3 = cylinder({r:2.3,h:7}).scale([1.5,1.5,1.5]).translate([0,0,10.7]);
+    cube1 = cube({size:[15,7,15], center:true}).rotateX(50).translate([0,1,21]); 
+    cylinderDifference = difference(cylinder2,cylinder3, cube1);
+    
+    cube2 = cube({size:[3,6,14], center:true}).rotateX(50).translate([0,-6.5,15]);
+    cube3 = cube({size:[9,9,13], center:true}).translate([0,-16.66,15.6]);
+    cubeDifference = difference(cube2, cylinder3,cube3);
+    
+    cylinder4 = cylinder({r:4.3,h:3, center:true}).scale([1,1,1]).rotateY(90).translate([0,-7.9,18.4]);
+    cylinderDifference2 = difference(cylinder4, cube3);
+    
+    return union(cylinder1, cylinderDifference, cubeDifference, cylinderDifference2);
+}
+
+
+function createPiece(){
+    var cube1, cylinder1, cylinder2;
+    cube1 = cube({size:[3,6,20], center:true}).translate([0,-20,20]);
+    cylinder1 = cylinder({r:3,h:3, center:true}).scale([1,1,1]).rotateY(90).translate([0,-20,10]);
+    cylinder2 = cylinder({r:3,h:3, center:true}).scale([1,1,1]).rotateY(90).translate([0,-20,30]);
+    return union(cube1,cylinder1, cylinder2);
+}
+
+
+function createArm1(){
+    var arm1;
+    arm1 = createPiece().scale([1,1.3,1.3]).translate([-3,17.8,5]);
+    return arm1;
+}
+
+function createArm2(){
+    var armPart1, armPart2, armPart3;
+    armPart1 = createArm1().rotateX(-90).translate([3,-52.2,35.8]);
+    armPart2 = armPart1.translate([-6,0,0]);
+    armPart3 = cube({size:[4,6,7.8], center:true}).translate([-3,-21.25,44]); 
+    return union(armPart1, armPart2, armPart3);
+}
+
+
+function createHead(){
+    var cube1, cylinder1, cylinder2, cylinder3, cube2, cylinder4, cylinder5, cylinder6, cylinder7, cylinder8, finalPiece;
+    cube1 = cube({size:[3,5,7.8], center:true}).translate([-3,-53,44]);
+    cylinder1 = cylinder({r:3.9,h:3, center:true}).scale([1,1,1]).rotateY(90).translate([-3,-50.6,44]);
+    cylinder2 = cylinder({r:3.9,h:3, center:true}).scale([1,1,1]).rotateX(90).translate([-4.5,-57,44]);
+    cylinder3 = cylinder({r:3.9,h:3, center:true}).scale([1,1,1]).rotateX(90).translate([-1.5,-57,44]);
+    cube2 = cube({size:[3,3,7.8], center:true}).translate([-3,-57,44]);
+    cylinder4 = cylinder({r:0.7,h:3, center:true}).scale([1,1,1]).rotateX(90).translate([-3,-57,44]);
+    cylinder5 = cylinder({r:0.4,h:3, center:true}).scale([1,1,1]).rotateX(90).translate([-7,-57,44]);
+    cylinder6 = cylinder({r:0.4,h:3, center:true}).scale([1,1,1]).rotateX(90).translate([-5.4,-57,44]);
+    cylinder7 = cylinder({r:0.4,h:3, center:true}).scale([1,1,1]).rotateX(90).translate([-0.6,-57,44]);
+    cylinder8 = cylinder({r:0.4,h:3, center:true}).scale([1,1,1]).rotateX(90).translate([1,-57,44]);
+    finalPiece = union(cube1,cylinder1,cylinder2,cylinder3, cube2);
+    finalPiece = difference(finalPiece,cylinder4, cylinder5, cylinder6, cylinder7, cylinder8);
+    finalPiece = finalPiece.translate([0,16.3,0]);
+    return finalPiece;
+}
+
+
+
+
+

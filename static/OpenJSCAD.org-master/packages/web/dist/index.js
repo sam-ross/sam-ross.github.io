@@ -94842,7 +94842,7 @@ var _require2 = require('./editor'),
 
 var version = require('../../package.json').version;
 
-var examples = [{ file: 'logo.jscad', title: 'OpenJSCAD.org Logo' }, { file: 'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF' }, { file: 'example001.jscad', title: 'Sphere with cutouts', spacing: true }, { file: 'example001.scad', title: 'Sphere with cutouts', type: 'OpenSCAD' }, { file: 'example002.jscad', title: 'Cone with cutouts' }, { file: 'example002.scad', title: 'Cone with cutouts', type: 'OpenSCAD' }, { file: 'example003.jscad', title: 'Cube with cutouts' }, { file: 'example003.scad', title: 'Cube with cutouts', type: 'OpenSCAD' },
+var examples = [{ file: 'logo.jscad', title: 'OpenJSCAD.org Logo' }, { file: 'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF' }, { file: 'robotArm.jscad', title: 'Robot arm', spacing: true }, { file: 'example001.scad', title: 'Sphere with cutouts', type: 'OpenSCAD' }, { file: 'example002.jscad', title: 'Cone with cutouts' }, { file: 'example002.scad', title: 'Cone with cutouts', type: 'OpenSCAD' }, { file: 'example003.jscad', title: 'Cube with cutouts' }, { file: 'example003.scad', title: 'Cube with cutouts', type: 'OpenSCAD' },
 // { file:'example004.jscad', title: 'Cube minus sphere' },
 { file: 'example005.jscad', title: 'Pavillon' },
 
