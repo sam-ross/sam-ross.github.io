@@ -94832,7 +94832,7 @@ var _require2 = require('./editor'),
 
 var version = require('../../package.json').version;
 
-var examples = [{ file: 'logo.jscad', title: 'OpenJSCAD.org Logo' }, { file: 'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF' }, { file: 'example001.jscad', title: 'Sphere with cutouts', spacing: true }, { file: 'example001.scad', title: 'Sphere with cutouts', type: 'OpenSCAD' }, { file: 'example002.jscad', title: 'Cone with cutouts' }, { file: 'example002.scad', title: 'Cone with cutouts', type: 'OpenSCAD' }, { file: 'example003.jscad', title: 'Cube with cutouts' }, { file: 'example003.scad', title: 'Cube with cutouts', type: 'OpenSCAD' },
+var examples = [{ file: 'robotArmUpdated.jscad', title: 'Robot Arm' }, { file: 'logo.amf', title: 'OpenJSCAD.org Logo', type: 'AMF' }, { file: 'example001.jscad', title: 'Sphere with cutouts', spacing: true }, { file: 'example001.scad', title: 'Sphere with cutouts', type: 'OpenSCAD' }, { file: 'example002.jscad', title: 'Cone with cutouts' }, { file: 'example002.scad', title: 'Cone with cutouts', type: 'OpenSCAD' }, { file: 'example003.jscad', title: 'Cube with cutouts' }, { file: 'example003.scad', title: 'Cube with cutouts', type: 'OpenSCAD' },
 // { file:'example004.jscad', title: 'Cube minus sphere' },
 { file: 'example005.jscad', title: 'Pavillon' },
 
@@ -94851,7 +94851,7 @@ function createExamples(me) {
         src += '</td><td class="examplesSeparator" widthx=' + colp + ' valign=top>';
       }
       if (examples[i].spacing) src += '<p/>';
-      src += '<li><a class=\'..\OpenJSCAD.org-master\packages\web\examples\' data-path=' + ('../OpenJSCAD.org-master/packages/web/examples/' + examples[i].file) + ' href=\'#..\OpenJSCAD.org-master\packages\web\examples\'> + ' + examples[i].title + ' </a>\n';
+      src += '<li><a class=\'..\OpenJSCAD.org-master\packages\examples\' data-path=' + ('../OpenJSCAD.org-master/packages/examples/' + examples[i].file) + ' href=\'#..\OpenJSCAD.org-master\packages\examples\'> + ' + examples[i].title + ' </a>\n';
       if (examples[i].type) src += ' <span class=type>(' + examples[i].type + ')</span></a>';
       if (examples[i].new) src += ' <span class=newExample>new</span></a>';
     }
@@ -95026,7 +95026,7 @@ function loadInitialExample(me, params) {
     } else if (isInLocalStorage) {
       loadLocalStorage(localStorage.editorContent, params);
     } else {
-      fetchExample('../OpenJSCAD.org-master/packages/web/examples/' + examples[0].file, undefined, params);
+      fetchExample('../OpenJSCAD.org-master/packages/examples/' + examples[0].file, undefined, params);
     }
   }
 }
