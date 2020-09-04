@@ -4,10 +4,25 @@
         <meta charset="utf-8">
         <title>JS 3D Physics</title>
         <style>
-            body { margin: 0; }
+            body { 
+                margin: 0; 
+                color: #61443e;
+                font-family:Monospace;
+                font-size:13px;
+                text-align:center;
+
+                overflow: hidden;
+            }
+
+            #info {
+                position: absolute;
+                top: 0px; width: 100%;
+                padding: 5px;
+            }
         </style>
     </head>
     <body>
+        <div id="info">Threejs Robot Arm (hinge 1 is a fixed constraint)<br>Press Q or A to move hinge 2.<br>Press W or S to move hinge 3.<br>Press E or D to move hinge 4.<br>Press R or F to move hinge 5.</div>
         <script src="../ammo/builds/ammo.js"></script>
         <script type="module" src="../js/loadSTL.js"></script>
     </body>

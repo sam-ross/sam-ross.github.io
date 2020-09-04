@@ -2,10 +2,16 @@
         import { OrbitControls } from '../three/examples/jsm/controls/OrbitControls.js'
         import { STLLoader } from '../three/examples/jsm/loaders/STLLoaderOpenJSCAD.js'
         
-        let scene, camera, controls, renderer, centerX, centerY, centerZ, physicsWorld, tmpTrans, clock, rigidBodies = [], bodiesArray = [], transformArray = [], heightArray = [];
+        let scene, camera, controls, renderer, centerX, centerY, centerZ, physicsWorld, tmpTrans, clock, rigidBodies = [], bodiesArray = [], transformArray = [], heightArray = [], allLoaded = false;
         var hasBeenRanOnce = false;
         var objectArray;
         var firstObject = true;
+
+        const STATE = { DISABLE_DEACTIVATION:4 };
+        let moveDirection1 = { up: 0, down: 0 };
+        let moveDirection2 = { up: 0, down: 0 };
+        let moveDirection3 = { up: 0, down: 0 };
+        let moveDirection4 = { up: 0, down: 0 };
 
 
         //Ammojs Initialization
@@ -24,6 +30,7 @@
             //createCrossPlane(0, 2, 0);
             //createCrossPlane(0, 9.4, 0);
             //createCrossPlane(0, 22.8, 1.88);
+            setupEventHandlers();
             animate();
         }
 
@@ -162,7 +169,12 @@
                     //console.log(geometry.attributes.position.count);
 
                     // Adds the threejs mesh to the scene
-                    scene.add( objectArray[parent.counter] );
+                    if(parent.counter==5){
+                        scene.add( objectArray[parent.counter] );
+                    }else{
+                        scene.add( objectArray[parent.counter] );
+                    }
+                    
                 }
             );
 
@@ -181,7 +193,11 @@
             
             // The mass is currently set to zero which means each mesh will be static and won't fall under the forces of gravity
             // If the mass is set to >0 then the object is no longer static and will fall if the parts aren't connected together using constraints
-            let mass = 0;
+            let mass = 1;
+
+            if(parent.counter==0){
+                mass = 0;
+            }
 
             let transform = new Ammo.btTransform();
             transform.setIdentity();
@@ -205,6 +221,7 @@
 
             // This bodiesArray is used for storing the bodies of each part so they can be accessed later when createing constraints
             bodiesArray[parent.counter] = body;
+            body.setActivationState(STATE.DISABLE_DEACTIVATION);
 
             physicsWorld.addRigidBody( body );
             
@@ -212,30 +229,57 @@
             rigidBodies.push(objectArray[parent.counter]);
 
 
-
-            /*
+            
             // This is the code for the first constraint which is between the base and the first cylinder.
             // This constraint seems to work as expected and it is a fixes constraint
             if(parent.counter == 1){
                 let fixed = new Ammo.btFixedConstraint( bodiesArray[parent.counter-1], bodiesArray[parent.counter], transformArray[parent.counter-1], transformArray[parent.counter]);
                 physicsWorld.addConstraint( fixed, false );
             }
-            */
+            
 
-            /*
+            
             // This is the code for the hinge constraint between part 2 and 3 and it doesn't quite work as intended as part 3 slides to the side
             // This is the current point of uncertainty in the project 
             if(parent.counter == 2){
                 //create hinge joint
-                //let pivot1 = new Ammo.btVector3( 0, 3.75, 0 ); //btVector3 represents 3D points and vectors
-                //let pivot2 = new Ammo.btVector3( 0, -6.7, -1.88 );
-                let pivot1 = new Ammo.btVector3( 0, 3.75, 0 ); //btVector3 represents 3D points and vectors
-                let pivot2 = new Ammo.btVector3( 0, -1, 0 );
+                let pivot1 = new Ammo.btVector3( 0, 0, 0); //btVector3 represents 3D points and vectors
+                let pivot2 = new Ammo.btVector3( 0, 0, 0);
                 var axis = new Ammo.btVector3( 0, 1, 0 );
                 var hinge = new Ammo.btHingeConstraint( bodiesArray[parent.counter-1], bodiesArray[parent.counter], pivot1, pivot2, axis, axis, true );
                 physicsWorld.addConstraint( hinge, true );
             }
-            */
+
+
+            if(parent.counter == 3){
+                //create hinge joint
+                let pivot1 = new Ammo.btVector3( 0, -8, 18.55); //btVector3 represents 3D points and vectors
+                let pivot2 = new Ammo.btVector3( 0, -8, 18.55);
+                var axis = new Ammo.btVector3( 1, 0, 0 );
+                var hinge = new Ammo.btHingeConstraint( bodiesArray[parent.counter-1], bodiesArray[parent.counter], pivot1, pivot2, axis, axis, true );
+                physicsWorld.addConstraint( hinge, true );
+            }
+
+
+            if(parent.counter == 4){
+                //create hinge joint
+                let pivot1 = new Ammo.btVector3( 0, -8.18, 44); //btVector3 represents 3D points and vectors
+                let pivot2 = new Ammo.btVector3( 0, -8.18, 44);
+                var axis = new Ammo.btVector3( 1, 0, 0 );
+                var hinge = new Ammo.btHingeConstraint( bodiesArray[parent.counter-1], bodiesArray[parent.counter], pivot1, pivot2, axis, axis, true );
+                physicsWorld.addConstraint( hinge, true );
+            }
+
+
+            if(parent.counter == 5){
+                //create hinge joint
+                let pivot1 = new Ammo.btVector3( 0, -34.23, 44); //btVector3 represents 3D points and vectors
+                let pivot2 = new Ammo.btVector3( 0, -34.23, 44);
+                var axis = new Ammo.btVector3( 1, 0, 0 );
+                var hinge = new Ammo.btHingeConstraint( bodiesArray[parent.counter-1], bodiesArray[parent.counter], pivot1, pivot2, axis, axis, true );
+                physicsWorld.addConstraint( hinge, true );
+            }
+            
            
 
             //console.log(objectArray[parent.counter].geometry.attributes.position.array[0]);
@@ -251,7 +295,10 @@
                 console.log("All meshes exported successfully");
                 console.log("Balls have been dropped");
                 dropBall();
+                //setAngularFactors();
+                allLoaded = true;
             }
+
             
         }
 
@@ -435,6 +482,23 @@
         }
 
 
+        function setAngularFactors(){
+            let rotationVector = new Ammo.btVector3( 1, 0, 0 );
+            let linearRotationVector = new Ammo.btVector3( 0, 1, 1 );
+            let physicsBody = objectArray[3].userData.physicsBody;
+            physicsBody.setAngularFactor(rotationVector);
+            physicsBody.setLinearFactor(linearRotationVector);
+
+            physicsBody = objectArray[4].userData.physicsBody;
+            physicsBody.setAngularFactor(rotationVector);
+            physicsBody.setLinearFactor(linearRotationVector);
+
+            physicsBody = objectArray[5].userData.physicsBody;
+            physicsBody.setAngularFactor(rotationVector);
+            physicsBody.setLinearFactor(linearRotationVector);
+        }
+
+
         function addShadowedLight( x, y, z, color, intensity ) {
 
             var directionalLight = new THREE.DirectionalLight( color, intensity );
@@ -488,9 +552,124 @@
         }
 
 
+
+        function setupEventHandlers(){
+            window.addEventListener('keydown', handleKeyDown, false);       //  calls the handleKeyDown function when any key is pressed down
+            window.addEventListener('keyup', handleKeyUp, false);        //  calls the handleKeyUp function when any key is released
+            
+        }
+        
+        //  checks if the key that was pressed is the up or down key
+        function handleKeyDown(event){
+            let keyCode = event.keyCode;
+            switch(keyCode){
+                case 81:        //  when the up key is pressed down
+                    moveDirection1.up = 1;
+                    break;
+                case 65:        //  when the down key is pressed down
+                    moveDirection1.down = 1;
+                    break;
+                case 87:        //  when the up key is pressed down
+                    moveDirection2.up = 1;
+                    break;
+                case 83:        //  when the down key is pressed down
+                    moveDirection2.down = 1;
+                    break;    
+                case 69:        //  when the up key is pressed down
+                    moveDirection3.up = 1;
+                    break;
+                case 68:        //  when the down key is pressed down
+                    moveDirection3.down = 1;
+                    break;    
+                case 82:        //  when the up key is pressed down
+                    moveDirection4.up = 1;
+                    break;
+                case 70:        //  when the down key is pressed down
+                    moveDirection4.down = 1;
+                    break;
+            }
+        }
+        
+        //  checks if the key that was released is the up or down key
+        function handleKeyUp(event){
+            let keyCode = event.keyCode;
+            switch(keyCode){
+                case 81:        //  when the up key is released
+                    moveDirection1.up = 0;
+                    break;
+                case 65:        //  when the down key is released
+                    moveDirection1.down = 0;
+                    break;
+                case 87:        //  when the up key is released
+                    moveDirection2.up = 0;
+                    break;
+                case 83:        //  when the down key is released
+                    moveDirection2.down = 0;
+                    break;
+                case 69:        //  when the up key is released
+                    moveDirection3.up = 0;
+                    break;
+                case 68:        //  when the down key is released
+                    moveDirection3.down = 0;
+                    break;
+                case 82:        //  when the up key is released
+                    moveDirection4.up = 0;
+                    break;
+                case 70:        //  when the down key is released
+                    moveDirection4.down = 0;
+                    break;
+            }
+        }
+
+
+        function movePart3(){
+            let scalingFactor = 1;      //  changes the speed of the rotation
+            let resultantImpulse = new Ammo.btVector3(0, moveDirection1.up - moveDirection1.down, 0);      //  if the up and down keys are pressed then it won't move
+            resultantImpulse.op_mul(scalingFactor);     //  multiplies the rotation vector by the scaling factor
+            let physicsBody = objectArray[2].userData.physicsBody;
+            physicsBody.setAngularVelocity(resultantImpulse);
+        }
+
+        function movePart4(){
+            let scalingFactor = 1;      //  changes the speed of the rotation
+            let resultantImpulse = new Ammo.btVector3(moveDirection2.up - moveDirection2.down, moveDirection1.up - moveDirection1.down, 0);      //  if the up and down keys are pressed then it won't move
+            resultantImpulse.op_mul(scalingFactor);     //  multiplies the rotation vector by the scaling factor
+            let physicsBody = objectArray[3].userData.physicsBody;
+            physicsBody.setAngularVelocity(resultantImpulse);
+            if(moveDirection2.up - moveDirection2.down == 1){
+                console.log("Testing");
+            }
+        }
+
+        function movePart5(){
+            let scalingFactor = 1;      //  changes the speed of the rotation
+            let resultantImpulse = new Ammo.btVector3(moveDirection3.up - moveDirection3.down, moveDirection1.up - moveDirection1.down, 0);      //  if the up and down keys are pressed then it won't move
+            resultantImpulse.op_mul(scalingFactor);     //  multiplies the rotation vector by the scaling factor
+            let physicsBody = objectArray[4].userData.physicsBody;
+            physicsBody.setAngularVelocity(resultantImpulse);
+        }
+
+        function movePart6(){
+            let scalingFactor = 1;      //  changes the speed of the rotation
+            let resultantImpulse = new Ammo.btVector3(moveDirection4.up - moveDirection4.down, moveDirection1.up - moveDirection1.down, 0);      //  if the up and down keys are pressed then it won't move
+            resultantImpulse.op_mul(scalingFactor);     //  multiplies the rotation vector by the scaling factor
+            let physicsBody = objectArray[5].userData.physicsBody;
+            physicsBody.setAngularVelocity(resultantImpulse);
+        }
+
+
+
         function animate() {
 
             let deltaTime = clock.getDelta();
+
+            if(allLoaded){
+                movePart3();
+                movePart4();
+                //movePart4Lateral();
+                movePart5();
+                movePart6();
+            }
 
             updatePhysics( deltaTime );
 
@@ -510,4 +689,6 @@
                 // this function call actually creates the threejs and ammojs object from the stl text within the parent.export.stl string
                 loadNewSTL();
             }
+
+            
         };
