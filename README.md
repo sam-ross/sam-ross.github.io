@@ -3,7 +3,7 @@
 Had a part-time voluntary internship/work experience with QLab over Summer 2020 (May-October). I worked on two different projects, as explained below.
 <br /><br />
 
-# 1) OpenJSCAD-Threejs 
+## 1) OpenJSCAD-Threejs 
 
 The main project I worked on was the OpenJSCAD-Threejs project. The high level goal was to create a parameterisable function that outputs a robot arm that QLab can manufacture and simulate.
 <br /><br />This project involved taking OpenJSCAD and Threejs and implementing a way to export OpenJSCAD CAD models into the Threejs/Ammojs physics engine, with working collision shapes and constraints etc.
@@ -12,7 +12,7 @@ The main project I worked on was the OpenJSCAD-Threejs project. The high level g
 <br />
 
 
-# 2) Threejs-URDF-Loader 
+## 2) Threejs-URDF-Loader 
 
 The other, shorter project I worked on was the Threejs-URDF-Loader and it involved taking an [already existing URDFLoader](https://github.com/gkjohnson/urdf-loaders) and converting it from using nodejs/npm modules to using only pure JavaScript ES6 modules.
 <br /><br />
