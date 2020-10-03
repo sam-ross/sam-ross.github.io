@@ -78,7 +78,7 @@
             };
             loader.load(
 
-                '/../static/urdf/ar2.urdf',                    // The path to the URDF within the package OR absolute
+                '/../Threejs-URDF-Loader/static/urdf/ar2.urdf',                    // The path to the URDF within the package OR absolute
                 robot => { 
                     // The robot is loaded!  
                     robot.position.set(0, 0, 0)
