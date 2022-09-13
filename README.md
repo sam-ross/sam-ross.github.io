@@ -1,6 +1,6 @@
-# QLab Summer Projects
+# QLab Summer Internship
 
-Had a part-time voluntary internship/work experience with QLab over Summer 2020 (May-October). I worked on two different projects, as explained below.
+These are the projects worked on as part of an internship with QLab over Summer 2020 (May-September). I worked on two different projects, as explained below.
 <br /><br />
 
 ## 1) OpenJSCAD-Threejs 
